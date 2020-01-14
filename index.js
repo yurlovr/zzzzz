@@ -5,7 +5,7 @@ const bot = new TelegramBot(TOKEN, {polling: true})
 bot.on('message', msg => {
   let result = null
   if(msg.text) {
-    result = begin(msg.text)
+    result = begin(msg.text) + ''
   } else {
     result = 'пустота'
   }
