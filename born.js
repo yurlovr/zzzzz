@@ -6,7 +6,6 @@ const msInDay = 86400000
 const msInHour = 3600000
 const msInMinutes = 60000
 const msInSeconds = 1000
-const currentDate = new Date().getTime()
 const bot = new TelegramBot(TOKEN, {polling: true})
 bot.on('message', msg => {
   bot.sendMessage(msg.chat.id, timeToBornDate(msg.text) )
@@ -14,7 +13,7 @@ bot.on('message', msg => {
 
 function timeToBornDate(str) {
   if (str.toLowerCase() === 'сколько') {
-    console.log('tut')
+    const currentDate = new Date().getTime()
     const timeBeforeBirthDay = bornDate - currentDate
     const day = (timeBeforeBirthDay -  timeBeforeBirthDay % msInDay) / msInDay
     let ostatok = timeBeforeBirthDay % msInDay
@@ -24,9 +23,9 @@ function timeToBornDate(str) {
     ostatok = ostatok % msInMinutes
     const seconds = (ostatok  - ostatok % msInSeconds) / msInSeconds
     const ms = ostatok % msInSeconds
-    const str =  `До Дня Рождения Ани осталось ${day} дня, ${hours} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`
-    console.log(`До Дня Рождения Ани осталось ${day} дня, ${hour} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`)
-    return str
+    // const str =  `До Дня Рождения Ани осталось ${day} дня, ${hours} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`
+    // console.log(`До Дня Рождения Ани осталось ${day} дня, ${hour} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`)
+    return `До Дня Рождения Ани осталось ${day} дня, ${hours} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`
   }
   return 'Спросите меня лучше когда День Рождения Ани!!! Для этого отправьте мне - сколько'
 }
