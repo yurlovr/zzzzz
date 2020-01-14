@@ -24,6 +24,37 @@ function s(str) {
   let arr = str.split(' ').filter(i => i)
   let x = 0
   let num = 0
+  let flag = null
+  let beforeFlag = null
+  arr = arr.map((i, index) => {
+    
+    if (i === ')') {
+      flag = false
+      return null
+    }
+    if (i === '(') {
+      flag = true
+      beforeFlag = arr[index - 1]
+      return null
+    }
+    if (flag) {
+      if (beforeFlag === '-') {
+        if(!parseInt(i) && i === 'x'){
+          return i
+        }
+        if(!parseInt(i) && i === '+'){
+          return '-'
+        }
+        if(!parseInt(i) && i === '-'){
+          return '+'
+        }
+      }
+      if (beforeFlag === '+') {
+        return i
+      }
+    }
+    return i
+  }).filter(i => i)
   arr.forEach((i,index) => {
     if (i === 'x') {
       if (index === 0) {
