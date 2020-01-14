@@ -3,7 +3,13 @@ const TelegramBot = require('node-telegram-bot-api')
 const TOKEN = '1049798124:AAGRQnJSaGa229Ug62kKpqAkBm8fF5QpE0I'
 const bot = new TelegramBot(TOKEN, {polling: true})
 bot.on('message', msg => {
-  bot.sendMessage(msg.chat.id,  msg.text)
+  let result = null
+  if(msg.text) {
+    result = begin(msg.text)
+  } else {
+    result = 'пустота'
+  }
+  bot.sendMessage(msg.chat.id, result)
 })
 
 function twoPart (str) {
@@ -63,7 +69,7 @@ function s(str) {
 }
 
 function begin(str) {
-  const array = twoPart(eqution)  
+  const array = twoPart(str)  
   let object = {
     left: {
       x: s(array.left).x,
