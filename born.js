@@ -1,7 +1,10 @@
 const TelegramBot = require('node-telegram-bot-api')
 
 const TOKEN = '1048121825:AAFth28sqZtR5E2cMLblu_bLoU7D7tMCydI'
-const bornDate = new Date('05.16.2020').getTime()
+const bornDate =  {
+  ANYA: new Date('05.16.2020').getTime(),
+  MISHA: new Date('10.10.2020').getTime(),
+}
 const msInDay = 86400000
 const msInHour = 3600000
 const msInMinutes = 60000
@@ -12,9 +15,19 @@ bot.on('message', msg => {
 })
 
 function timeToBornDate(str) {
-  if (str.toLowerCase() === 'сколько') {
+  if(str.toLowerCase() === 'миша' || str.toLowerCase() === 'аня') {
+    let date = null
+    let name = ''
+    if (str.toLowerCase() === 'миша') {
+      date = bornDate.MISHA
+      name= 'Миши'
+    }
+    if (str.toLowerCase() === 'аня') {
+      date = bornDate.ANYA
+      name= 'Ани'
+    }
     const currentDate = new Date().getTime()
-    const timeBeforeBirthDay = bornDate - currentDate
+    const timeBeforeBirthDay = date - currentDate
     const day = (timeBeforeBirthDay -  timeBeforeBirthDay % msInDay) / msInDay
     let ostatok = timeBeforeBirthDay % msInDay
     const hours = (ostatok  - ostatok % msInHour) / msInHour
@@ -23,9 +36,7 @@ function timeToBornDate(str) {
     ostatok = ostatok % msInMinutes
     const seconds = (ostatok  - ostatok % msInSeconds) / msInSeconds
     const ms = ostatok % msInSeconds
-    // const str =  `До Дня Рождения Ани осталось ${day} дня, ${hours} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`
-    // console.log(`До Дня Рождения Ани осталось ${day} дня, ${hour} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`)
-    return `До Дня Рождения Ани осталось ${day} дня, ${hours} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`
-  }
-  return 'Спросите меня лучше когда День Рождения Ани!!! Для этого отправьте мне - сколько'
+    return `До Дня Рождения ${name} осталось ${day} дня, ${hours} часов, ${minutes} минут, ${seconds} секунд, ${ms} миллисекунд! :-)`
+    }
+  return 'Спросите меня лучше когда День Рождения Миши или Ани!!! Для этого отправьте мне - Миша или Аня'
 }
