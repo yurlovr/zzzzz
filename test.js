@@ -1,16 +1,17 @@
-const TelegramBot = require('node-telegram-bot-api')
-
-const TOKEN = '1049798124:AAGRQnJSaGa229Ug62kKpqAkBm8fF5QpE0I'
-const bot = new TelegramBot(TOKEN, {polling: true})
-bot.on('message', msg => {
-  let result = null
-  if(msg.text) {
-    result = begin(msg.text) + ''
-  } else {
-    result = 'пустота'
+function begin(str) {
+  const array = twoPart(str)  
+  let object = {
+    left: {
+      x: s(array.left).x,
+      num: s(array.left).num
+    },
+    right: {
+      x: s(array.right).x,
+      num: s(array.right).num
+    }
   }
-  bot.sendMessage(msg.chat.id, result)
-})
+  return decision(object)
+}
 
 function twoPart (str) {
   let result = {}
@@ -65,25 +66,12 @@ function s(str) {
       }
     }
   })
+  console.log('x', x, 'num', num)
  return { x, num }
 }
 
-function begin(str) {
-  const array = twoPart(str)  
-  let object = {
-    left: {
-      x: s(array.left).x,
-      num: s(array.left).num
-    },
-    right: {
-      x: s(array.right).x,
-      num: s(array.right).num
-    }
-  }
-  return decision(object)
-}
-
 function decision(object) {
+  console.log(object)
   let numRight = null
   let x = null
   if (!object.right.x && object.right.num) {
@@ -116,3 +104,4 @@ function decision(object) {
   }
   return x
 }
+console.log(begin('5*x=-25'))
