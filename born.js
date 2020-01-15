@@ -62,7 +62,7 @@ function timeToBornDate(str) {
     time = timeToEvent(date)
     return ` До летних каникул осталось ${time.day} дня, ${time.hours} часов, ${time.minutes} минут, ${time.seconds} секунд, ${time.ms} миллисекунд!`
   }
-  return 'Спросите меня лучше когда День Рождения Миши или Ани!!! Для этого отправьте мне - Миша или Аня'
+  return 'Я знаю когда День Рождения Ани - отправьте Аня, День Рождения Миши - Миша, а еще я знаю когда летние каникулы и Новый год'
 }
 
 function timeToEvent(date) {
