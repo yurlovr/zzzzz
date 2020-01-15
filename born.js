@@ -12,9 +12,6 @@ const msInMinutes = 60000
 const msInSeconds = 1000
 const bot = new TelegramBot(TOKEN, {
   polling: true,
-  request: {
-    proxy: '91.214.128.243:23500'
-    }
   })
 bot.on('message', msg => {
   if (msg.text.toLowerCase() !== 'cat') {
