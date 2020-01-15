@@ -1,4 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api')
+const fetch = require('node-fetch')
 // bot.sendPhoto(chatId, photo, { caption: 'Милые котята' });
 const TOKEN = '1048121825:AAFth28sqZtR5E2cMLblu_bLoU7D7tMCydI'
 const bornDate =  {
