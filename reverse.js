@@ -13,14 +13,14 @@ function reverse(str) {
   if(str.toLowerCase().includes('привет')){
     return 'Привет, как твои дела?'
   }
-  if(helloFunc(str.toLowerCase())) {
+  if(helloFunc(str.toLowerCase(), hello)) {
     return 'это Отлично!!!'
   }
   
   return str.split('').reverse().join('')
 }
 
-function helloFunc(str) {
+function helloFunc(str, array) {
   let arr = str.split(' ')
-  return arr.some(i => hello.some(item => item === i))
+  return arr.some(i => array.some(item => item === i))
 }
