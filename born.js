@@ -2,79 +2,138 @@ const TelegramBot = require('node-telegram-bot-api')
 const fetch = require('node-fetch')
 const some = require('./libs/some')
 // bot.sendPhoto(chatId, photo, { caption: 'Милые котята' });
-const TOKEN = '1048121825:AAFth28sqZtR5E2cMLblu_bLoU7D7tMCydI'
-const bornDate =  {
-  ANYA: new Date('05.16.2020').getTime(),
-  MISHA: new Date('10.10.2020').getTime(),
-  SUMMER: new Date('06.01.2020').getTime(),
-  NEWYEAR: new Date('01.01.2021').getTime()
-}
-const newYear = ['новый год', 'нг', '2021']
-const summer = ['лето', 'каникулы']
-const msInDay = 86400000
-const msInHour = 3600000
-const msInMinutes = 60000
-const msInSeconds = 1000
-const bot = new TelegramBot(TOKEN, {
+const { CONST } = require('./const/const')
+const bot = new TelegramBot(CONST.token, {
   polling: true,
   })
 bot.on('message', msg => {
-  if (msg.text.toLowerCase() !== 'cat') {
-    bot.sendMessage(msg.chat.id, timeToBornDate(msg.text) )
-  } else {
-    giveMePhoto()
-      .then(photo => {
-        bot.sendPhoto(chatId, photo, { caption: '' });
-      })
+  const chatId = msg.chat.id
+  const firstName = msg.from.first_name
+ console.log(msg)
+  switch (msg.text.toLowerCase()) {
+    case  CONST.phrase.cat: 
+      giveMePhotoCat()
+        .then(photo => {
+          bot.sendPhoto(chatId, photo, { caption: '' });
+        })
+        .catch(() => {
+          bot.sendMessage(chatId, CONST.phrase.notAvailable)
+        })
+      break
+    case CONST.phrase.dog:
+      giveMePhotoDog()
+        .then(photo => {
+          bot.sendPhoto(chatId, photo, { caption: '' });
+        })
+        .catch(() => {
+          bot.sendMessage(chatId, CONST.phrase.notAvailable)
+        })
+      break
+    case CONST.phrase.fox:
+      giveMePhotoFox()
+        .then(photo => {
+          bot.sendPhoto(chatId, photo, { caption: '' })
+        })
+        .catch(() => {
+          bot.sendMessage(chatId, CONST.phrase.notAvailable)
+        })
+      break
+      case CONST.phrase.usd:
+        giveMeValute(CONST.valute.usd)
+          .then(val => {
+            bot.sendMessage(chatId, `Курс ${CONST.phrase.usd + 'а'} - ${val.toFixed(2)} ₽.`)
+          })
+          .catch(() => {
+            bot.sendMessage(chatId, CONST.phrase.notAvailable)
+          })
+        break
+      case CONST.phrase.eur:
+        giveMeValute(CONST.valute.eur)
+          .then(val => {
+            bot.sendMessage(chatId, `Курс ${CONST.phrase.eur} - ${val.toFixed(2)} ₽.`)
+          })
+          .catch(() => {
+            bot.sendMessage(chatId, CONST.phrase.notAvailable)
+          })
+        break
+    case CONST.phrase.hello:
+      const message = CONST.phrase.hello[0].toLocaleUpperCase() + CONST.phrase.hello.slice(1)  + ', ' + firstName +'! ' + CONST.phrase.how
+        bot.sendMessage(chatId, message) 
+        break
+    default: 
+      bot.sendMessage(chatId,  timeToBornDate(msg.text))  
+      break
   }
 })
 
-async function giveMePhoto() {
+async function giveMePhotoCat() {
   const response = await fetch('https://api.thecatapi.com/v1/images/search')
   const data = await response.json()
   return data[0].url
 }
 
+async function giveMeValute(val) {
+  const response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js')
+  const data = await response.json()
+  if (val === CONST.valute.usd) {
+    return data.Valute.USD.Value
+  }
+  if (val === CONST.valute.eur) {
+    return data.Valute.EUR.Value
+  }
+}
+
+async function giveMePhotoFox() {
+  const response = await fetch('https://randomfox.ca/floof/')
+  const data = await response.json()
+  return data.image
+}
+
+async function giveMePhotoDog() {
+  const response = await fetch('https://dog.ceo/api/breeds/image/random')
+  const data = await response.json()
+  if (data.status === 'success') {
+    return data.message
+  } else {
+    return CONST.phrase.notAvailable
+  }
+}
+
 function timeToBornDate(str) {
-  if(str.toLowerCase() === 'миша' || str.toLowerCase() === 'аня') {
-    let date = null
+  if(str.toLowerCase() === CONST.phrase.MISHA || str.toLowerCase() === CONST.phrase.ANYA) {
     let name = ''
     let time = {}
-    if (str.toLowerCase() === 'миша') {
-      date = bornDate.MISHA
-      name= 'Миши'
-      time = timeToEvent(date)
+    if (str.toLowerCase() === CONST.phrase.MISHA) {
+      name= CONST.phrase.MISHA_R
+      time = timeToEvent(CONST.date.MISHA)
     }
-    if (str.toLowerCase() === 'аня') {
-      date = bornDate.ANYA
-      name= 'Ани'
-      time = timeToEvent(date)
+    if (str.toLowerCase() === CONST.phrase.ANYA) {
+      name= CONST.phrase.ANYA_R
+      time = timeToEvent(CONST.date.ANYA)
     }
     return `До Дня Рождения ${name} осталось ${time.day} дня, ${time.hours} часов, ${time.minutes} минут, ${time.seconds} секунд, ${time.ms} миллисекунд! :-)`
   }
-  if (some(str.toLowerCase(), summer)) {
-    date = bornDate.SUMMER
-    time = timeToEvent(date)
+  if (some(str.toLowerCase(), CONST.phrase.summer)) {
+    time = timeToEvent(CONST.date.SUMMER)
     return ` До летних каникул осталось ${time.day} дня, ${time.hours} часов, ${time.minutes} минут, ${time.seconds} секунд, ${time.ms} миллисекунд!`
   }
-  if (some(str.toLowerCase(), newYear)) {
-    date = bornDate.SUMMER
-    time = timeToEvent(date)
-    return ` До летних каникул осталось ${time.day} дня, ${time.hours} часов, ${time.minutes} минут, ${time.seconds} секунд, ${time.ms} миллисекунд!`
+  if (some(str.toLowerCase(), CONST.phrase.newYear)) {
+    time = timeToEvent(CONST.date.NEWYEAR)
+    return ` До Нового 2021 года осталось ${time.day} дня, ${time.hours} часов, ${time.minutes} минут, ${time.seconds} секунд, ${time.ms} миллисекунд!`
   }
-  return 'Я знаю когда День Рождения Ани - отправьте Аня, День Рождения Миши - Миша, а еще я знаю когда летние каникулы и Новый год'
+  return  CONST.phrase.default
 }
 
 function timeToEvent(date) {
   const currentDate = new Date().getTime()
   const timeBeforeBirthDay = date - currentDate
-  const day = (timeBeforeBirthDay -  timeBeforeBirthDay % msInDay) / msInDay
-  let ostatok = timeBeforeBirthDay % msInDay
-  const hours = (ostatok  - ostatok % msInHour) / msInHour
-  ostatok = ostatok % msInHour
-  const minutes = (ostatok  - ostatok % msInMinutes) / msInMinutes
-  ostatok = ostatok % msInMinutes
-  const seconds = (ostatok  - ostatok % msInSeconds) / msInSeconds
-  const ms = ostatok % msInSeconds
+  const day = (timeBeforeBirthDay -  timeBeforeBirthDay % CONST.time.msInDay) / CONST.time.msInDay
+  let ostatok = timeBeforeBirthDay % CONST.time.msInDay
+  const hours = (ostatok  - ostatok % CONST.time.msInHour) / CONST.time.msInHour
+  ostatok = ostatok % CONST.time.msInHour
+  const minutes = (ostatok  - ostatok % CONST.time.msInMinutes) / CONST.time.msInMinutes
+  ostatok = ostatok % CONST.time.msInMinutes
+  const seconds = (ostatok  - ostatok % CONST.time.msInSeconds) / CONST.time.msInSeconds
+  const ms = ostatok % CONST.time.msInSeconds
   return { day, hours, minutes, seconds, ms }
 }
